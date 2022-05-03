@@ -76,13 +76,13 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
     _;
   }
 */
-  // Define a modifer that verifies the Caller
-  /* Not use because of implementing Role
+  // Define a modifer that verifies the Calle
+  
   modifier verifyCaller (address _address) {
     require(msg.sender == _address); 
     _;
   }
-*/
+
 
   // Define a modifier that checks if the paid amount is sufficient to cover the price
   modifier paidEnough(uint _price) { 
@@ -189,7 +189,7 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
 
 
   // Define a function 'processtItem' that allows a farmer to mark an item 'Processed'
-  function processItem(uint _upc) harvested(_upc) onlyFarmer public 
+  function processItem(uint _upc) harvested(_upc) verifyCaller(items[_upc].ownerID) onlyFarmer public 
   // Call modifier to check if upc has passed previous supply chain stage
   
   // Call modifier to verify caller of this function
@@ -202,7 +202,7 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
   }
 
   // Define a function 'packItem' that allows a farmer to mark an item 'Packed'
-  function packItem(uint _upc) processed(_upc) onlyFarmer  public 
+  function packItem(uint _upc) processed(_upc) onlyFarmer verifyCaller(items[_upc].ownerID)  public 
   // Call modifier to check if upc has passed previous supply chain stage
   
   // Call modifier to verify caller of this function
@@ -215,7 +215,7 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
   }
 
   // Define a function 'sellItem' that allows a farmer to mark an item 'ForSale' verifyCaller(items[_upc].originFarmerID)
-  function sellItem(uint _upc, uint _price)  packed(_upc)  onlyFarmer public 
+  function sellItem(uint _upc, uint _price)  packed(_upc)  onlyFarmer verifyCaller(items[_upc].ownerID) public 
   // Call modifier to check if upc has passed previous supply chain stage
   
   // Call modifier to verify caller of this function
@@ -255,7 +255,7 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
 
   // Define a function 'shipItem' that allows the distributor to mark an item 'Shipped'
   // Use the above modifers to check if the item is sold
-  function shipItem(uint _upc) sold(_upc) onlyDistributor public 
+  function shipItem(uint _upc) sold(_upc) onlyDistributor verifyCaller(items[_upc].distributorID)  public 
     // Call modifier to check if upc has passed previous supply chain stage
     
     // Call modifier to verify caller of this function
